@@ -3,8 +3,8 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +14,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
+    @Override
     public void createUsersTable() {
         //language=MySQL
         String sql = """
@@ -24,8 +25,7 @@ public class UserDaoJDBCImpl implements UserDao {
                   user_age TINYINT NOT NULL
                 );
                 """;
-        try (var connection = Util.openConnection();
-             var statement = connection.createStatement()) {
+        try (Connection connection = Util.openConnection(); Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -35,13 +35,13 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
+    @Override
     public void dropUsersTable() {
         //language=MySQL
         String sql = """
                 DROP TABLE IF EXISTS pre_project.user;
                 """;
-        try (var connection = Util.openConnection();
-             var statement = connection.createStatement()) {
+        try (Connection connection = Util.openConnection(); Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (SQLException e) {
             System.out.println("Connection is unavailable");
@@ -50,21 +50,20 @@ public class UserDaoJDBCImpl implements UserDao {
         }
 
 
-
     }
 
+    @Override
     public void saveUser(String name, String lastName, byte age) {
         String sql = """
                 INSERT INTO pre_project.user (first_name, last_name, user_age)
                 VALUES (?, ?, ?);
                 """;
-        try (var connection = Util.openConnection();
-             var preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = Util.openConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
             preparedStatement.executeUpdate();
-            System.out.println("User с именем - "+name+" добавлен в базу данных.");
+            System.out.println("User с именем - " + name + " добавлен в базу данных.");
         } catch (SQLException e) {
             System.out.println("Connection is unavailable");
             throw new RuntimeException(e);
@@ -73,14 +72,14 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
+    @Override
     public void removeUserById(long id) {
         String sql = """
                 DELETE
                 FROM pre_project.user
                 WHERE user_id = ?;
                 """;
-        try (var connection = Util.openConnection();
-             var preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = Util.openConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
 
@@ -90,15 +89,15 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
+    @Override
     public List<User> getAllUsers() {
         List<User> allUsers = new ArrayList<>();
         String sql = """
                 SELECT *
                 FROM pre_project.user;
                 """;
-        try (var connection = Util.openConnection();
-             var statement = connection.createStatement()) {
-            var resultSet = statement.executeQuery(sql);
+        try (Connection connection = Util.openConnection(); Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 User user = new User();
 
@@ -118,18 +117,17 @@ public class UserDaoJDBCImpl implements UserDao {
         return allUsers;
     }
 
+    @Override
     public void cleanUsersTable() {
         String sql = """
                 DELETE FROM pre_project.user;
                 """;
-        try (var connection = Util.openConnection();
-             var statement = connection.createStatement()) {
+        try (Connection connection = Util.openConnection(); Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (SQLException e) {
             System.out.println("Connection is unavailable");
             throw new RuntimeException(e);
 
         }
-
     }
 }
