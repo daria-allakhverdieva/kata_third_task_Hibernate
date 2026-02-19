@@ -5,6 +5,8 @@ import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
@@ -28,6 +30,9 @@ public class UserDaoHibernateImpl implements UserDao {
 
             session.createNativeQuery(sql).executeUpdate();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
         }
 
     }
@@ -43,6 +48,9 @@ public class UserDaoHibernateImpl implements UserDao {
 
             session.createNativeQuery(sql).executeUpdate();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
         }
 
     }
@@ -54,6 +62,9 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
             session.persist(new User(name, lastName, age));
             session.getTransaction().commit();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
         }
 
     }
@@ -65,6 +76,9 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
             session.remove(session.get(User.class, id));
             session.getTransaction().commit();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
         }
 
     }
@@ -78,6 +92,9 @@ public class UserDaoHibernateImpl implements UserDao {
             allUsers = session.createQuery("SELECT u FROM User u", User.class).list();
             session.getTransaction().commit();
             return allUsers;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
         }
     }
 
@@ -88,6 +105,9 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
             session.createQuery("DELETE FROM User u").executeUpdate();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
         }
 
     }

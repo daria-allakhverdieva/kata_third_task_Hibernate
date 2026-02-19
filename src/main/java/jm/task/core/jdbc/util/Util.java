@@ -10,6 +10,18 @@ import java.sql.SQLException;
 
 public class Util {
     // реализуйте настройку соеденения с БД
+    private final static String URL = "jdbc:mysql://localhost:3306";
+    private final static String USERNAME = "root";
+    private final static String PASSWORD = "daria2101";
+
+    public static Connection openConnection() {
+        try {
+            return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static SessionFactory sessionFactory() {
         Configuration configuration = new Configuration();
 
@@ -24,18 +36,5 @@ public class Util {
                 .addAnnotatedClass(User.class);
 
         return configuration.buildSessionFactory();
-    }
-
-
-    private final static String URL = "jdbc:mysql://localhost:3306";
-    private final static String USERNAME = "root";
-    private final static String PASSWORD = "daria2101";
-
-    public static Connection openConnection() {
-        try {
-            return DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
